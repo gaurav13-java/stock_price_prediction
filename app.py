@@ -34,3 +34,18 @@ if st.button("Predict"):
         "Actual": y_test.values.flatten(),
         "Predicted": predictions.flatten()
     }))
+
+# Visualize predictions in a cleaner way
+predictions_df = pd.DataFrame({
+    "Date": data.iloc[len(data) - len(y_test):]["Date"],
+    "Actual Price": y_test.values.flatten(),
+    "Predicted Price": predictions.flatten()
+})
+
+# Display as a table
+st.write("### Actual vs Predicted Stock Prices")
+st.dataframe(predictions_df)
+
+# Optionally, add a line chart for better visualization
+st.line_chart(predictions_df.set_index('Date'))
+
