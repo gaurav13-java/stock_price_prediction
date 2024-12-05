@@ -6,6 +6,31 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
+# Add custom CSS to set the background image
+background_image_url = "https://images.unsplash.com/photo-1562175068-5e9e75021b99"  # Stock market image from Unsplash
+
+st.markdown(
+    f"""
+    <style>
+    .reportview-container {{
+        background: url({background_image_url});
+        background-size: cover;
+        background-position: center center;
+        height: 100vh;
+    }}
+    .sidebar {{
+        background: rgba(255, 255, 255, 0.7);
+    }}
+    .main {{
+        background: rgba(255, 255, 255, 0.7);
+        padding: 20px;
+        border-radius: 10px;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Title of the app
 st.title('Stock Price Prediction')
 
@@ -17,16 +42,20 @@ This app predicts stock prices using historical data. You can select a stock tic
 # Predefined list of stock ticker symbols
 tickers = ['AAPL', 'GOOGL', 'AMZN', 'MSFT', 'TSLA', 'META', 'NFLX']
 
-# Dropdown menu for selecting a stock ticker or custom input field
+# Dropdown menu for selecting a stock ticker
+selected_ticker = st.selectbox('Select Stock Ticker Symbol', tickers)
+
+# Text input field for custom stock ticker
 custom_ticker = st.text_input("Or enter a custom stock ticker symbol (e.g., AAPL)")
+
+# If the user enters a custom ticker, override the selected ticker
 if custom_ticker:
     selected_ticker = custom_ticker.upper()  # Convert input to uppercase
-else:
-    selected_ticker = st.selectbox('Select Stock Ticker Symbol', tickers)
 
-# Fetch stock data based on the selected ticker
+# Display the selected ticker
 st.write(f'You selected: {selected_ticker}')
 
+# Fetch stock data based on the selected ticker
 @st.cache
 def get_data(ticker):
     """Function to fetch stock data"""
