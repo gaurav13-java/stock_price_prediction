@@ -7,35 +7,33 @@ import plotly.graph_objects as go
 # Add custom CSS to set the background image
 background_image_url = "https://images.unsplash.com/photo-1669951584304-8da02ea5a54f?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"  # Replace with the URL or local path to your image
 
+# Inject custom CSS directly into the Streamlit app
 st.markdown(
     f"""
     <style>
-    /* Ensure the background image applies to the entire page */
-    .reportview-container {{
-        background: url({background_image_url});
+    html, body {{
+        background: url({background_image_url}) no-repeat center center fixed;
         background-size: cover;
-        background-position: center center;
-        height: 100vh;
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
     }}
-    .sidebar {{
-        background: rgba(255, 255, 255, 0.7); /* Light transparency for sidebar */
-    }}
-    .main {{
-        background: rgba(255, 255, 255, 0.7); /* Light transparency for the main content */
+    .reportview-container {{
+        background: rgba(255, 255, 255, 0.8);
         padding: 20px;
         border-radius: 10px;
-        margin-top: 50px; /* Space for header */
     }}
-    body {{
-        background: url({background_image_url});
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        height: 100vh;
+    .sidebar {{
+        background: rgba(255, 255, 255, 0.7);
+    }}
+    .main {{
+        background: rgba(255, 255, 255, 0.7);
+        padding: 20px;
+        border-radius: 10px;
     }}
     </style>
-    """,
-    unsafe_allow_html=True
+    """, unsafe_allow_html=True
 )
 
 # Title of the app
