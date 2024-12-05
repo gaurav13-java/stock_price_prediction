@@ -107,8 +107,13 @@ fig_pred.add_trace(go.Scatter(x=X_test.index, y=y_pred, mode='lines', name='Pred
 fig_pred.update_layout(title=f'{selected_ticker} Actual vs Predicted Stock Prices', xaxis_title='Date', yaxis_title='Price (USD)')
 st.plotly_chart(fig_pred)
 
-# Show the predicted values in a table
-predicted_data = pd.DataFrame({'Date': X_test.index, 'Actual Price': y_test, 'Predicted Price': y_pred})
+# Ensure the index of X_test is used as the common index for the predicted data
+predicted_data = pd.DataFrame({
+    'Date': X_test.index,  # Use the index from X_test for the Date
+    'Actual Price': y_test.values,  # Ensure y_test is converted to a numpy array
+    'Predicted Price': y_pred  # Ensure y_pred is directly used
+})
+
 st.write(predicted_data)
 
 # Display a message
