@@ -4,10 +4,10 @@ from model import add_features, preprocess_data, train_model, evaluate_model
 import pandas as pd
 import plotly.graph_objects as go
 
-# Add custom CSS to set the background image
-background_image_url = "https://images.unsplash.com/photo-1669951584304-8da02ea5a54f?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"  # Replace with the URL or local path to your image
+# Use a simpler background image URL from Unsplash or another source
+background_image_url = "https://images.unsplash.com/photo-1584697964156-e1e7b9d0a9bc"
 
-# Inject custom CSS directly into the Streamlit app
+# Inject custom CSS for background image
 st.markdown(
     f"""
     <style>
@@ -20,7 +20,7 @@ st.markdown(
         padding: 0;
     }}
     .reportview-container {{
-        background: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.8);  /* White background with slight transparency */
         padding: 20px;
         border-radius: 10px;
     }}
