@@ -4,34 +4,25 @@ from model import add_features, preprocess_data, train_model, evaluate_model
 import pandas as pd
 import plotly.graph_objects as go
 
-# Use a simpler background image URL from Unsplash or another source
+# Use a simple background image URL from Unsplash or another source
 background_image_url = "https://images.unsplash.com/photo-1584697964156-e1e7b9d0a9bc"
 
-# Inject custom CSS for background image
+# Test with a basic color background first
 st.markdown(
-    f"""
+    """
     <style>
-    html, body {{
-        background: url({background_image_url}) no-repeat center center fixed;
-        background-size: cover;
-        height: 100%;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-    }}
-    .reportview-container {{
-        background: rgba(255, 255, 255, 0.8);  /* White background with slight transparency */
+    .reportview-container {
+        background-color: #f5f5f5;  /* Try simple light color */
+        padding: 20px;
+    }
+    .sidebar {
+        background: rgba(255, 255, 255, 0.8);
+    }
+    .main {
+        background: rgba(255, 255, 255, 0.8);
         padding: 20px;
         border-radius: 10px;
-    }}
-    .sidebar {{
-        background: rgba(255, 255, 255, 0.7);
-    }}
-    .main {{
-        background: rgba(255, 255, 255, 0.7);
-        padding: 20px;
-        border-radius: 10px;
-    }}
+    }
     </style>
     """, unsafe_allow_html=True
 )
