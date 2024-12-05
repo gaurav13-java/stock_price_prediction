@@ -1,89 +1,60 @@
 import streamlit as st
-import yfinance as yf
+from utils import download_stock_data
+from model import add_features, preprocess_data, train_model, evaluate_model
 import pandas as pd
 import plotly.graph_objects as go
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
 
-# Title of the app
-st.title('Stock Price Prediction')
+st.title("Stock Price Prediction App")
 
-# Description of the app
-st.write("""
-This app predicts stock prices using historical data. You can select a stock ticker symbol from the dropdown list or enter your own custom symbol.
-""")
+# Input fields
+ticker = st.text_input("Enter Stock Ticker Symbol (e.g., AAPL)", value="AAPL")
+start_date = st.date_input("Start Date", value=pd.to_datetime("2015-01-01"))
+end_date = st.date_input("End Date", value=pd.to_datetime("2023-01-01"))
 
-# Predefined list of stock ticker symbols
-tickers = ['AAPL', 'GOOGL', 'AMZN', 'MSFT', 'TSLA', 'META', 'NFLX']
+if st.button("Predict"):
+    # Step 1: Download stock data
+    data = download_stock_data(ticker, start_date, end_date)
+    st.write("### Stock Data", data.tail())
 
-# Dropdown menu for selecting a stock ticker or custom input field
-custom_ticker = st.text_input("Or enter a custom stock ticker symbol (e.g., AAPL)")
-if custom_ticker:
-    selected_ticker = custom_ticker.upper()  # Convert input to uppercase
-else:
-    selected_ticker = st.selectbox('Select Stock Ticker Symbol', tickers)
+    # Step 2: Feature engineering
+    data = add_features(data)
+    st.write("### Data with Features", data.tail())
 
-# Fetch stock data based on the selected ticker
-st.write(f'You selected: {selected_ticker}')
+    # Step 3: Preprocess data
+    X_train, X_test, y_train, y_test = preprocess_data(data)
 
-@st.cache
-def get_data(ticker):
-    """Function to fetch stock data"""
-    data = yf.download(ticker, start="2020-01-01", end="2023-01-01")
-    return data
+    # Step 4: Train model
+    model = train_model(X_train, y_train)
 
-# Fetch stock data
-stock_data = get_data(selected_ticker)
+    # Step 5: Evaluate model
+    mse, predictions = evaluate_model(model, X_test, y_test)
 
-# Display stock data
-st.write(f"Stock Data for {selected_ticker} from Yahoo Finance")
-st.write(stock_data)
+    # Calculate percentage difference
+    diff = ((predictions.flatten() - y_test.values.flatten()) / y_test.values.flatten()) * 100
+    avg_diff = diff.mean()
 
-# Plot the stock's closing price over time
-fig = go.Figure()
-fig.add_trace(go.Scatter(x=stock_data.index, y=stock_data['Close'], mode='lines', name='Actual Close Price'))
-fig.update_layout(title=f'{selected_ticker} Stock Price Over Time', xaxis_title='Date', yaxis_title='Price (USD)')
-st.plotly_chart(fig)
+    # Display metrics
+    st.write("### Model Evaluation Metrics")
+    st.write(f"**Mean Squared Error (MSE):** {mse:.4f}")
+    st.write(f"**Average Percentage Difference:** {avg_diff:.2f}%")
 
-# Prepare the data for prediction (use 'Open' price as an example feature)
-stock_data['Date'] = stock_data.index
-stock_data['Date'] = stock_data['Date'].map(pd.Timestamp.to_julian_date)
-X = stock_data[['Date']]  # Using 'Date' as a feature
-y = stock_data['Close']  # Using 'Close' price as the target variable
+    # Create a predictions dataframe
+    predictions_df = pd.DataFrame({
+        "Date": data.iloc[len(data) - len(y_test):]["Date"],
+        "Actual Price": y_test.values.flatten(),
+        "Predicted Price": predictions.flatten()
+    })
 
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
+    # Display predictions as a table
+    st.write("### Actual vs Predicted Stock Prices")
+    st.dataframe(predictions_df)
 
-# Initialize and train the Linear Regression model
-model = LinearRegression()
-model.fit(X_train, y_train)
-
-# Predict stock prices on the test set
-y_pred = model.predict(X_test)
-
-# Evaluate the model using Mean Squared Error (MSE)
-mse = mean_squared_error(y_test, y_pred)
-st.write(f'Mean Squared Error (MSE) of the model: {mse:.2f}')
-
-# Plot predicted vs actual stock prices
-fig_pred = go.Figure()
-
-# Actual values
-fig_pred.add_trace(go.Scatter(x=X_test.index, y=y_test, mode='lines', name='Actual Price'))
-
-# Predicted values
-fig_pred.add_trace(go.Scatter(x=X_test.index, y=y_pred, mode='lines', name='Predicted Price', line=dict(dash='dash')))
-
-fig_pred.update_layout(title=f'{selected_ticker} Actual vs Predicted Stock Prices', xaxis_title='Date', yaxis_title='Price (USD)')
-st.plotly_chart(fig_pred)
-
-# Show the predicted values in a table
-predicted_data = pd.DataFrame({'Date': X_test.index, 'Actual Price': y_test, 'Predicted Price': y_pred})
-st.write(predicted_data)
-
-# Display a message
-st.write("""
-The model uses a simple Linear Regression approach to predict stock prices based on the historical data. 
-It uses the date as the feature and predicts the closing stock price.
-""")
+    # Plotly interactive chart
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=predictions_df['Date'], y=predictions_df['Actual Price'],
+                             mode='lines', name='Actual', line=dict(color='blue')))
+    fig.add_trace(go.Scatter(x=predictions_df['Date'], y=predictions_df['Predicted Price'],
+                             mode='lines', name='Predicted', line=dict(color='red', dash='dot')))
+    fig.update_layout(title="Actual vs Predicted Stock Prices",
+                      xaxis_title="Date", yaxis_title="Price", template="plotly_dark")
+    st.plotly_chart(fig)
