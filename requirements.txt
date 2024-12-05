@@ -5,3 +5,4 @@ yfinance
 streamlit
 matplotlib
 seaborn
+plotly
