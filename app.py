@@ -7,7 +7,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
 # Add custom CSS to set the background image
-background_image_url = "https://images.unsplash.com/photo-1562175068-5e9e75021b99"  # Stock market image from Unsplash
+background_image_url = "https://images.unsplash.com/photo-1669951584304-8da02ea5a54f?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"  # Stock market image from Unsplash
 
 st.markdown(
     f"""
