@@ -2,6 +2,7 @@ import streamlit as st
 from utils import download_stock_data
 from model import add_features, preprocess_data, train_model, evaluate_model
 import pandas as pd
+import plotly.graph_objects as go
 
 st.title("Stock Price Prediction App")
 
@@ -27,25 +28,33 @@ if st.button("Predict"):
 
     # Step 5: Evaluate model
     mse, predictions = evaluate_model(model, X_test, y_test)
-    st.write(f"### Model Evaluation: MSE = {mse}")
 
-    # Step 6: Visualize predictions
-    st.line_chart(pd.DataFrame({
-        "Actual": y_test.values.flatten(),
-        "Predicted": predictions.flatten()
-    }))
+    # Calculate percentage difference
+    diff = ((predictions.flatten() - y_test.values.flatten()) / y_test.values.flatten()) * 100
+    avg_diff = diff.mean()
 
-# Visualize predictions in a cleaner way
-predictions_df = pd.DataFrame({
-    "Date": data.iloc[len(data) - len(y_test):]["Date"],
-    "Actual Price": y_test.values.flatten(),
-    "Predicted Price": predictions.flatten()
-})
+    # Display metrics
+    st.write("### Model Evaluation Metrics")
+    st.write(f"**Mean Squared Error (MSE):** {mse:.4f}")
+    st.write(f"**Average Percentage Difference:** {avg_diff:.2f}%")
 
-# Display as a table
-st.write("### Actual vs Predicted Stock Prices")
-st.dataframe(predictions_df)
+    # Create a predictions dataframe
+    predictions_df = pd.DataFrame({
+        "Date": data.iloc[len(data) - len(y_test):]["Date"],
+        "Actual Price": y_test.values.flatten(),
+        "Predicted Price": predictions.flatten()
+    })
 
-# Optionally, add a line chart for better visualization
-st.line_chart(predictions_df.set_index('Date'))
+    # Display predictions as a table
+    st.write("### Actual vs Predicted Stock Prices")
+    st.dataframe(predictions_df)
 
+    # Plotly interactive chart
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=predictions_df['Date'], y=predictions_df['Actual Price'],
+                             mode='lines', name='Actual', line=dict(color='blue')))
+    fig.add_trace(go.Scatter(x=predictions_df['Date'], y=predictions_df['Predicted Price'],
+                             mode='lines', name='Predicted', line=dict(color='red', dash='dot')))
+    fig.update_layout(title="Actual vs Predicted Stock Prices",
+                      xaxis_title="Date", yaxis_title="Price", template="plotly_dark")
+    st.plotly_chart(fig)
