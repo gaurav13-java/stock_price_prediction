@@ -6,31 +6,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
-# Add custom CSS to set the background image
-background_image_url = "https://images.unsplash.com/photo-1562175068-5e9e75021b99"  # Stock market image from Unsplash
-
-st.markdown(
-    f"""
-    <style>
-    .reportview-container {{
-        background: url({background_image_url});
-        background-size: cover;
-        background-position: center center;
-        height: 100vh;
-    }}
-    .sidebar {{
-        background: rgba(255, 255, 255, 0.7);
-    }}
-    .main {{
-        background: rgba(255, 255, 255, 0.7);
-        padding: 20px;
-        border-radius: 10px;
-    }}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 # Title of the app
 st.title('Stock Price Prediction')
 
@@ -107,13 +82,8 @@ fig_pred.add_trace(go.Scatter(x=X_test.index, y=y_pred, mode='lines', name='Pred
 fig_pred.update_layout(title=f'{selected_ticker} Actual vs Predicted Stock Prices', xaxis_title='Date', yaxis_title='Price (USD)')
 st.plotly_chart(fig_pred)
 
-# Ensure that the columns passed into the DataFrame are one-dimensional
-predicted_data = pd.DataFrame({
-    'Date': X_test.index,  # X_test.index should already be one-dimensional
-    'Actual Price': y_test.values.flatten(),  # Flatten y_test to ensure it's 1D
-    'Predicted Price': y_pred.flatten()  # Flatten y_pred to ensure it's 1D
-})
-
+# Show the predicted values in a table
+predicted_data = pd.DataFrame({'Date': X_test.index, 'Actual Price': y_test, 'Predicted Price': y_pred})
 st.write(predicted_data)
 
 # Display a message
