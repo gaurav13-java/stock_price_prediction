@@ -4,30 +4,35 @@ from model import add_features, preprocess_data, train_model, evaluate_model
 import pandas as pd
 import plotly.graph_objects as go
 
-# Use a simple background image URL from Unsplash or another source
+# URL for background image
 background_image_url = "https://images.unsplash.com/photo-1584697964156-e1e7b9d0a9bc"
 
-# Test with a basic color background first
+# Custom CSS for background image
 st.markdown(
-    """
+    f"""
     <style>
-    .reportview-container {
-        background-color: #f5f5f5;  /* Try simple light color */
+    .css-1d391kg {{
+        background: url({background_image_url});
+        background-size: cover;
+        background-position: center center;
+        min-height: 100vh;
+    }}
+    .reportview-container {{
         padding: 20px;
-    }
-    .sidebar {
-        background: rgba(255, 255, 255, 0.8);
-    }
-    .main {
-        background: rgba(255, 255, 255, 0.8);
+        background-color: rgba(255, 255, 255, 0.8);
+    }}
+    .sidebar {{
+        background: rgba(255, 255, 255, 0.7);
+    }}
+    .main {{
+        background: rgba(255, 255, 255, 0.7);
         padding: 20px;
         border-radius: 10px;
-    }
+    }}
     </style>
     """, unsafe_allow_html=True
 )
 
-# Title of the app
 st.title("Stock Price Prediction App")
 
 # Input fields
