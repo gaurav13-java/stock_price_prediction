@@ -7,7 +7,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
 # Add custom CSS to set the background image
-background_image_url = "https://images.unsplash.com/photo-1669951584304-8da02ea5a54f?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"  # Stock market image from Unsplash
+background_image_url = "https://images.unsplash.com/photo-1562175068-5e9e75021b99"  # Stock market image from Unsplash
 
 st.markdown(
     f"""
@@ -107,11 +107,11 @@ fig_pred.add_trace(go.Scatter(x=X_test.index, y=y_pred, mode='lines', name='Pred
 fig_pred.update_layout(title=f'{selected_ticker} Actual vs Predicted Stock Prices', xaxis_title='Date', yaxis_title='Price (USD)')
 st.plotly_chart(fig_pred)
 
-# Ensure the index of X_test is used as the common index for the predicted data
+# Ensure that the columns passed into the DataFrame are one-dimensional
 predicted_data = pd.DataFrame({
-    'Date': X_test.index,  # Use the index from X_test for the Date
-    'Actual Price': y_test.values,  # Ensure y_test is converted to a numpy array
-    'Predicted Price': y_pred  # Ensure y_pred is directly used
+    'Date': X_test.index,  # X_test.index should already be one-dimensional
+    'Actual Price': y_test.values.flatten(),  # Flatten y_test to ensure it's 1D
+    'Predicted Price': y_pred.flatten()  # Flatten y_pred to ensure it's 1D
 })
 
 st.write(predicted_data)
