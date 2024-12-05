@@ -7,25 +7,20 @@ import plotly.graph_objects as go
 # URL for background image
 background_image_url = "https://images.unsplash.com/photo-1584697964156-e1e7b9d0a9bc"
 
-# Custom CSS for background image
+# HTML and inline CSS to apply the background image
 st.markdown(
     f"""
     <style>
-    .css-1d391kg {{
-        background: url({background_image_url});
+    .reportview-container {{
+        background: url({background_image_url}) no-repeat center center fixed;
         background-size: cover;
-        background-position: center center;
         min-height: 100vh;
     }}
-    .reportview-container {{
-        padding: 20px;
-        background-color: rgba(255, 255, 255, 0.8);
-    }}
     .sidebar {{
-        background: rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.8);
     }}
     .main {{
-        background: rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.8);
         padding: 20px;
         border-radius: 10px;
     }}
