@@ -17,20 +17,16 @@ This app predicts stock prices using historical data. You can select a stock tic
 # Predefined list of stock ticker symbols
 tickers = ['AAPL', 'GOOGL', 'AMZN', 'MSFT', 'TSLA', 'META', 'NFLX']
 
-# Dropdown menu for selecting a stock ticker
-selected_ticker = st.selectbox('Select Stock Ticker Symbol', tickers)
-
-# Text input field for custom stock ticker
+# Dropdown menu for selecting a stock ticker or custom input field
 custom_ticker = st.text_input("Or enter a custom stock ticker symbol (e.g., AAPL)")
-
-# If the user enters a custom ticker, override the selected ticker
 if custom_ticker:
     selected_ticker = custom_ticker.upper()  # Convert input to uppercase
-
-# Display the selected ticker
-st.write(f'You selected: {selected_ticker}')
+else:
+    selected_ticker = st.selectbox('Select Stock Ticker Symbol', tickers)
 
 # Fetch stock data based on the selected ticker
+st.write(f'You selected: {selected_ticker}')
+
 @st.cache
 def get_data(ticker):
     """Function to fetch stock data"""
