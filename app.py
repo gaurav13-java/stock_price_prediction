@@ -3,7 +3,7 @@ from utils import download_stock_data
 from model import add_features, preprocess_data, train_model, evaluate_model
 import pandas as pd
 import plotly.graph_objects as go
-
+import yfinance as yf
 # URL for background image
 background_image_url = "https://images.unsplash.com/photo-1584697964156-e1e7b9d0a9bc"
 
@@ -31,7 +31,8 @@ st.markdown(
 st.title("Stock Price Prediction App")
 
 # Input fields
-ticker = st.text_input("Enter Stock Ticker Symbol (e.g., AAPL)", value="AAPL")
+tickers = ['GME', 'LULU', 'UBER', 'SOUN','ULTA', 'TSLA','AAPL','PATH','HPE','INTC','LYFT']
+ticker = st.selectbox("Enter Stock Ticker Symbol", tickers)
 start_date = st.date_input("Start Date", value=pd.to_datetime("2015-01-01"))
 end_date = st.date_input("End Date", value=pd.to_datetime("2023-01-01"))
 
